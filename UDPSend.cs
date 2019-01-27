@@ -35,6 +35,8 @@ public static class UDPSend
     public static Vector3 CalculatePosition(Vector3 worldPosition, Camera camera)
     {
         var screenPosition = camera.WorldToScreenPoint(worldPosition);
-        return screenPosition / camera.pixelWidth;
+        screenPosition.x *= camera.pixelWidth;
+        screenPosition.y *= camera.pixelHeight;
+        return screenPosition;
     }
 }
