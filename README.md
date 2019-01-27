@@ -37,9 +37,12 @@ To send data to other games use the `UDPSend` class:
 ```c#
 // remember to always use this helper method to scale your
 // world position to resolution independent screen coordinates (percentage values effectively)
-Vector3 position = UDPSend.CalculatePosition(_rigidbody.position, Camera.main);
+Vector3 relativePosition = UDPSend.CalculatePosition(_rigidbody.position, Camera.main);
 var velocity = _rigidbody.velocity;
-UDPSend.SendObject("PlayerLanded", position, velocity);
+UDPSend.SendObject("PlayerLanded", relativePosition, velocity);
+
+// or use this convenience method for world positions
+UDPSend.SendObject("PlayerLanded", _rigidBody.position, Camera.main, velocity);
 ```
 
 ## Data structure
