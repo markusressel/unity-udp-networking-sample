@@ -12,7 +12,6 @@ public static class UDPSend
     public static void SendObject(string name, Vector3 worldPosition, Camera camera, Vector3 velocity) {
         SendObject(name, CalculatePosition(worldPosition, camera), velocity);
     }
-    
 
     // sendData
     public static void SendObject(string name, Vector3 position, Vector3 velocity)
@@ -40,8 +39,8 @@ public static class UDPSend
     public static Vector3 CalculatePosition(Vector3 worldPosition, Camera camera)
     {
         var screenPosition = camera.WorldToScreenPoint(worldPosition);
-        screenPosition.x *= camera.pixelWidth;
-        screenPosition.y *= camera.pixelHeight;
+        screenPosition.x /= camera.pixelWidth;
+        screenPosition.y /= camera.pixelHeight;
         return screenPosition;
     }
 }
