@@ -9,7 +9,7 @@ All classes are static so you can easily access them from anywhere.
 
 ### Receive data
 
-To receive objects from other games initialize the `UDPReceiver`:
+To receive objects from other games initialize the `UDPReceiver` **once** in the `Start()` method of a global script:
 
 ```
 UDPReceive.Init("MyClientName");
