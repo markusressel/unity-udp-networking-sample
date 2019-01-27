@@ -1,32 +1,33 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-public static class UDPReceive {
-
+public static class UDPReceive
+{
     // receiving Thread
-    static Thread receiveThread = new Thread(ReceiveData);
+    private static readonly Thread ReceiveThread = new Thread(ReceiveData);
 
-    public static int port = 60607;
+    public const int Port = 60607;
 
     public static string SenderId;
 
     // udpclient object
-    static UdpClient client = new UdpClient(port);
+    private static readonly UdpClient Client = new UdpClient(Port);
 
-    public static Queue<UDPEntity> objectQueue =
+    public static readonly Queue<UDPEntity> ObjectQueue =
         new Queue<UDPEntity>();
 
     // init
     public static void Init(string senderId)
     {
+        if (ReceiveThread.IsAlive) return;
+        
         SenderId = senderId;
-        receiveThread.IsBackground = true;
-        receiveThread.Start();
+        ReceiveThread.IsBackground = true;
+        ReceiveThread.Start();
     }
 
     // receive thread 
@@ -36,23 +37,19 @@ public static class UDPReceive {
         {
             try
             {
-                // Bytes empfangen.
+                // receive bytes
                 var anyIp = new IPEndPoint(IPAddress.Any, 0);
-                var data = client.Receive(ref anyIp);
-
-                // Bytes mit der UTF8-Kodierung in das Textformat kodieren.
+                var data = Client.Receive(ref anyIp);
                 var text = Encoding.UTF8.GetString(data);
                 var serialObject = JsonUtility.FromJson<UDPEntity>(text);
 
                 if (!serialObject.origin.Equals(SenderId))
                 {
-                    objectQueue.Enqueue(serialObject);
-                    //Debug.Log(serialObject.name);
+                    ObjectQueue.Enqueue(serialObject);
                 }
             }
             catch
             {
-
             }
         }
     }
