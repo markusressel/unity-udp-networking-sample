@@ -20,9 +20,13 @@ There is no callback when new packages arrive. Use the `Update()` function to ch
 ```c#
 void Update() 
 {
-  if (UDPReceive.ObjectQueue.Count > 0)
+  while (UDPReceive.ObjectQueue.Count > 0)
   {
-    // do something with the queue
+    var package = UDPReceive.ObjectQueue.Dequeue();
+    if (package.name.Contains("explosion", StringComparison.OrdinalIgnoreCase))
+    {
+      Jump();
+    }
   }
 }
 ```
