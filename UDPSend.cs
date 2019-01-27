@@ -9,8 +9,13 @@ public static class UDPSend
     private static readonly IPEndPoint RemoteEndPoint = new IPEndPoint(IPAddress.Broadcast, UDPReceive.Port);
     private static readonly UdpClient Client = new UdpClient();
 
+    public static void SendObject(string name, Vector3 worldPosition, Camera camera, Vector3 velocity) {
+        SendObject(name, CalculatePosition(worldPosition, camera), velocity);
+    }
+    
+
     // sendData
-    public static void SendObject(string name, Vector2 position, Vector2 velocity)
+    public static void SendObject(string name, Vector3 position, Vector3 velocity)
     {
         var serialObject = new UDPEntity
         {
