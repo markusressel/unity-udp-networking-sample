@@ -20,9 +20,13 @@ There is no callback when new packages arrive. Use the `Update()` function to ch
 ```c#
 void Update() 
 {
-  if (UDPReceive.objectQueue.Count > 0)
+  while (UDPReceive.ObjectQueue.Count > 0)
   {
-    // do something with the queue
+    var package = UDPReceive.ObjectQueue.Dequeue();
+    if (package.name.Contains("explosion", StringComparison.OrdinalIgnoreCase))
+    {
+      Jump();
+    }
   }
 }
 ```
@@ -31,7 +35,14 @@ void Update()
 To send data to other games use the `UDPSend` class:
 
 ```c#
-UDPSend.SendObject("PlayerLanded", _rigidbody.position, _rigidbody.velocity);
+// remember to always use this helper method to scale your
+// world position to resolution independent screen coordinates (percentage values effectively)
+Vector3 relativePosition = UDPSend.CalculatePosition(_rigidbody.position, Camera.main);
+var velocity = _rigidbody.velocity;
+UDPSend.SendObject("PlayerLanded", relativePosition, velocity);
+
+// or use this convenience method for world positions
+UDPSend.SendObject("PlayerLanded", _rigidBody.position, Camera.main, velocity);
 ```
 
 ## Data structure
@@ -46,6 +57,13 @@ The object that is sent across the network is a simple json object:
   "velocity": { "x": float, "y": float },
 }
 ```
+The **origin** is an identifier for the game client.
+
+**name** is used to specify the name/type of event that happened.
+
+The **position** should contain values in `[0..1]` range (although this is not guaranteed) and may contain a `z` component when used in 3D context.
+
+The **velocity** is mainly used to calculate the direction of the object. It's values are not limited to any range.
 
 ## Other implementations
 
